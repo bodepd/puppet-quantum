@@ -15,6 +15,7 @@ class quantum (
   $allow_overlapping_ips  = 'False',
   $control_exchange       = 'quantum',
   $rabbit_host            = 'localhost',
+  $rabbit_hosts           = undef,
   $rabbit_port            = '5672',
   $rabbit_user            = 'guest',
   $rabbit_virtual_host    = '/'
@@ -54,6 +55,22 @@ class quantum (
     ensure => $package_ensure
   }
 
+  if $rabbit_hosts {
+    quantum_config { 'DEFAULT/rabbit_host': ensure => absent }
+    quantum_config { 'DEFAULT/rabbit_port': ensure => absent }
+    quantum_config { 'DEFAULT/rabbit_hosts': value => join($rabbit_hosts, ',') }
+  } else {
+    quantum_config { 'DEFAULT/rabbit_host': value => $rabbit_host }
+    quantum_config { 'DEFAULT/rabbit_port': value => $rabbit_port }
+    quantum_config { 'DEFAULT/rabbit_hosts': value => "${rabbit_host}:${rabbit_port}" }
+  }
+
+  if size($rabbit_hosts) > 1 {
+    quantum_config { 'DEFAULT/rabbit_ha_queues': value => 'true' }
+  } else {
+    quantum_config { 'DEFAULT/rabbit_ha_queues': value => 'false' }
+  }
+
   quantum_config {
     'DEFAULT/verbose':                value => $verbose;
     'DEFAULT/debug':                  value => $debug;
@@ -67,8 +84,6 @@ class quantum (
     'DEFAULT/allow_bulk':             value => $allow_bulk;
     'DEFAULT/allow_overlapping_ips':  value => $allow_overlapping_ips;
     'DEFAULT/control_exchange':       value => $control_exchange;
-    'DEFAULT/rabbit_host':            value => $rabbit_host;
-    'DEFAULT/rabbit_port':            value => $rabbit_port;
     'DEFAULT/rabbit_userid':          value => $rabbit_user;
     'DEFAULT/rabbit_password':        value => $rabbit_password;
     'DEFAULT/rabbit_virtual_host':    value => $rabbit_virtual_host;

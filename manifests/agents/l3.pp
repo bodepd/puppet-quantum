@@ -18,6 +18,9 @@ class quantum::agents::l3 (
 
   include 'quantum::params'
 
+  if $::osfamily == 'Redhat' {
+    Package['quantum'] -> Quantum_l3_agent_config<||>
+  }
   Quantum_config<||> ~> Service['quantum-l3']
   Quantum_l3_agent_config<||> ~> Service['quantum-l3']
 

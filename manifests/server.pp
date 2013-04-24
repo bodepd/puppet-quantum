@@ -13,6 +13,9 @@ class quantum::server (
 
   require 'keystone::python'
 
+  if $::osfamily == 'Redhat' {
+    Package['quantum'] -> Quantum_api_config<||>
+  }
   Quantum_config<||> ~> Service['quantum-server']
   Quantum_api_config<||> ~> Service['quantum-server']
 

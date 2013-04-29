@@ -35,6 +35,7 @@ class quantum::agents::dhcp (
       }
       Package<| title == 'dnsmasq' |> -> Package<| title == $dhcp_agent_pkg |>
       Package['dnsmasq'] -> Package[$dhcp_agent_pkg]
+      Package['$dhcp_agent_pkg'] -> Quantum_dhcp_agent_config<||>
       package { 'dnsmasq':
         name   => $::quantum::params::dnsmasq_packages,
         ensure => present,

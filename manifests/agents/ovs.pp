@@ -29,7 +29,7 @@ class quantum::agents::ovs (
   Package[$quantum_ovs_pkg] -> Quantum_plugin_ovs<||>
 
   # Reads both its own and the base Quantum config
-  Quantum_plugin_ovs<||> -> Service['quantum-plugin-ovs-service', 'quantum-ovs-cleanup-service']
+  Quantum_plugin_ovs<||> -> Service['quantum-plugin-ovs-service']
 
   if ($bridge_mappings != []) {
     # bridge_mappings are used to describe external networks that are
@@ -49,10 +49,10 @@ class quantum::agents::ovs (
     $br_map_str = join($bridge_mappings, ',')
     quantum_plugin_ovs { 'OVS/bridge_mappings': value => $br_map_str; }
     quantum::plugins::ovs::bridge{$bridge_mappings:
-      require      => Service['quantum-plugin-ovs-service', 'quantum-ovs-cleanup-service'],
+      require      => Service['quantum-plugin-ovs-service']
     }
     quantum::plugins::ovs::port{$bridge_uplinks:
-      require      => Service['quantum-plugin-ovs-service', 'quantum-ovs-cleanup-service'],
+      require      => Service['quantum-plugin-ovs-service']
     }
   }
 
@@ -73,13 +73,13 @@ class quantum::agents::ovs (
 
   vs_bridge {$integration_bridge:
     ensure       => present,
-    require      => Service['quantum-plugin-ovs-service', 'quantum-ovs-cleanup-service'],
+    require      => Service['quantum-plugin-ovs-service']
   }
 
   if $enable_tunneling {
     vs_bridge {$tunnel_bridge:
       ensure       => present,
-      require      => Service['quantum-plugin-ovs-service', 'quantum-ovs-cleanup-service'],
+      require      => Service['quantum-plugin-ovs-service']
     }
     quantum_plugin_ovs {
       'OVS/local_ip': value => $local_ip;
@@ -105,7 +105,7 @@ class quantum::agents::ovs (
     name    => $::quantum::params::ovs_agent_service,
     enable  => $enabled,
     ensure  => $service_ensure,
-    require => [Package[$quantum_ovs_pkg]]
+    require => [Package[$quantum_ovs_pkg], Service['quantum-ovs-cleanup-service']]
   }
   
   service { 'quantum-ovs-cleanup-service':

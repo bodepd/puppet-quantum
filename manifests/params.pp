@@ -5,9 +5,10 @@ class quantum::params {
     $server_package     = false
     $server_service     = 'quantum-server'
 
-    $ovs_agent_package  = false
-    $ovs_agent_service  = 'quantum-openvswitch-agent'
-    $ovs_server_package = 'openstack-quantum-openvswitch'
+    $ovs_agent_package   = false
+    $ovs_agent_service   = 'quantum-openvswitch-agent'
+    $ovs_server_package  = 'openstack-quantum-openvswitch'
+    $ovs_cleanup_service = 'quantum-ovs-cleanup'
 
     $linuxbridge_package        = 'openstack-quantum-linuxbridge'
     $linuxbridge_agent_service  = 'quantum-linuxbridge-agent'
@@ -23,7 +24,6 @@ class quantum::params {
     $metadata_service   = 'quantum-metadata-agent'
 
     $cliff_package      = 'python-cliff'
-
     $kernel_headers     = "linux-headers-${::kernelrelease}"
 
   } elsif($::osfamily == 'Debian') {
@@ -32,10 +32,11 @@ class quantum::params {
     $server_package     = 'quantum-server'
     $server_service     = 'quantum-server'
 
-    $ovs_agent_package  = 'quantum-plugin-openvswitch-agent'
-    $ovs_agent_service  = 'quantum-plugin-openvswitch-agent'
-    $ovs_server_package = 'quantum-plugin-openvswitch'
-
+    $ovs_agent_package   = 'quantum-plugin-openvswitch-agent'
+    $ovs_agent_service   = 'quantum-plugin-openvswitch-agent'
+    $ovs_server_package  = 'quantum-plugin-openvswitch'
+    $ovs_cleanup_service = 'quantum-ovs-cleanup'
+  
     $dhcp_agent_package = 'quantum-dhcp-agent'
     $dhcp_agent_service = 'quantum-dhcp-agent'
 

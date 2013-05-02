@@ -9,7 +9,7 @@ project_page 'https://github.com/CiscoSystems/puppet-quantum'
 
 # Dependencies
 dependency 'CiscoSystems/mysql', '>= 0.3.0'
-dependency 'CiscoSystems/nova', '>= 1.0.1'
-dependency 'CiscoSystems/inifile', '>= 0.9.0'
-dependency 'CiscoSystems/vswitch', '>= 0.1.0a'
+#dependency 'CiscoSystems/nova', '>= 1.0.1'
+#dependency 'CiscoSystems/inifile', '>= 0.9.0'
+#dependency 'CiscoSystems/vswitch', '>= 0.1.0a'
 dependency 'CiscoSystems/stdlib', '>= 2.4.0'

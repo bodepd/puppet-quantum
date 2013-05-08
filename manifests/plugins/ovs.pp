@@ -17,7 +17,7 @@ class quantum::plugins::ovs (
   # because the list of networks there is still important
   # even if the ranges aren't specified
   $network_vlan_ranges  = 'physnet1:1000:2000',
-  $tunnel_id_ranges     = '1:1000',
+  $tunnel_id_ranges     = '1:1000'
 ) {
 
   include 'quantum::params'
@@ -66,5 +66,13 @@ class quantum::plugins::ovs (
       # 'OVS/enable_tunneling':   value => 'True';
       'OVS/tunnel_id_ranges':   value => $tunnel_id_ranges;
     }
+  }
+
+  if $::osfamily == 'Redhat' {
+	  file {"/etc/quantum/plugin.ini":
+		ensure => link,
+		target => "/etc/quantum/plugins/openvswitch/ovs_quantum_plugin.ini",
+		require => Package['quantum-plugin-ovs']
+	  }
   }
 }

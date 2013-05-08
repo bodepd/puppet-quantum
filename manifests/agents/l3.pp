@@ -13,11 +13,14 @@ class quantum::agents::l3 (
   $handle_internal_only_routers = 'True',
   $metadata_ip                  = '127.0.0.1',
   $polling_interval             = 3,
-  $root_helper      = 'sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf',
+  $root_helper      = 'sudo /usr/bin/quantum-rootwrap /etc/quantum/rootwrap.conf'
 ) {
 
   include 'quantum::params'
 
+  if $::osfamily == 'Redhat' {
+    Package['quantum'] -> Quantum_l3_agent_config<||>
+  }
   Quantum_config<||> ~> Service['quantum-l3']
   Quantum_l3_agent_config<||> ~> Service['quantum-l3']
 

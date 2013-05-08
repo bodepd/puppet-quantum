@@ -19,8 +19,14 @@ class quantum::agents::ovs (
   include 'quantum::params'
   require 'vswitch::ovs'
 
-  Package['quantum'] ->  Package['quantum-plugin-ovs-agent']
-  Package['quantum-plugin-ovs-agent'] -> Quantum_plugin_ovs<||>
+
+  if $::quantum::params::ovs_agent_package {
+    $quantum_ovs_pkg = 'quantum-plugin-ovs-agent'
+  } else {
+    $quantum_ovs_pkg = 'quantum-plugin-ovs'
+  }
+  Package['quantum'] ->  Package[$quantum_ovs_pkg]
+  Package[$quantum_ovs_pkg] -> Quantum_plugin_ovs<||>
 
   # Reads both its own and the base Quantum config
   Quantum_plugin_ovs<||> -> Service['quantum-plugin-ovs-service']
@@ -80,9 +86,11 @@ class quantum::agents::ovs (
     }
   }
 
-  package { 'quantum-plugin-ovs-agent':
-    name    => $::quantum::params::ovs_agent_package,
-    ensure  => $package_ensure,
+  if $::quantum::params::ovs_agent_package {
+	  package { 'quantum-plugin-ovs-agent':
+		name    => $::quantum::params::ovs_agent_package,
+		ensure  => $package_ensure,
+	  }
   }
 
   if $enabled {
@@ -95,8 +103,8 @@ class quantum::agents::ovs (
 
   service { 'quantum-plugin-ovs-service':
     name    => $::quantum::params::ovs_agent_service,
-    enable  => $enable,
+    enable  => $enabled,
     ensure  => $service_ensure,
-    require => [Package['quantum-plugin-ovs-agent']]
+    require => [Package[$quantum_ovs_pkg]]
   }
 }
